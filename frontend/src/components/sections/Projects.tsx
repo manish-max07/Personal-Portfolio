@@ -80,6 +80,20 @@ function SkeletonCard() {
   );
 }
 
+const getProjectIcon = (title: string) => {
+  const normalizedTitle = title.toLowerCase().trim();
+  if (normalizedTitle.includes("shield for she")) {
+    return "/ShieldForShe.png";
+  }
+  if (normalizedTitle.includes("alumni portal") || normalizedTitle.includes("gb pant")) {
+    return "/Alumni_Portal.webp";
+  }
+  if (normalizedTitle.includes("niramaya")) {
+    return "/Niramaya.png";
+  }
+  return null;
+};
+
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -195,8 +209,16 @@ export default function Projects() {
                     <div className="p-5 sm:p-6 flex flex-col flex-1">
                       {/* Title */}
                       <div className="flex items-start gap-3 mb-3">
-                        <div className="w-8 h-8 rounded-lg glass flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:shadow-[0_0_16px_rgba(34,200,255,0.3)] transition-shadow duration-300">
-                          <Folder className="w-4 h-4 text-accent-cyan" />
+                        <div className="w-8 h-8 rounded-lg glass flex items-center justify-center flex-shrink-0 mt-0.5 overflow-hidden group-hover:shadow-[0_0_16px_rgba(34,200,255,0.3)] transition-shadow duration-300">
+                          {getProjectIcon(project.title) ? (
+                            <img
+                              src={getProjectIcon(project.title)!}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Folder className="w-4 h-4 text-accent-cyan" />
+                          )}
                         </div>
                         <h3 className="text-lg font-semibold text-text-primary group-hover:text-accent-cyan transition-colors duration-300 leading-snug">
                           {project.title}
