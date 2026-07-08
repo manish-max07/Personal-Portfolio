@@ -103,8 +103,7 @@ export default function Navbar() {
               {/* Download Resume */}
               <a
                 href="/Manish_Kumar_Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+                download="Manish_Kumar_Resume.pdf"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-accent-cyan glass glow-border glow-border-hover transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
               >
                 <Download className="w-4 h-4" />

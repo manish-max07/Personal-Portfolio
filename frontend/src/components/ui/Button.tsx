@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   icon?: React.ReactNode;
+  download?: string | boolean;
 }
 
 export default function Button({
@@ -18,6 +19,7 @@ export default function Button({
   onClick,
   className = "",
   icon,
+  download,
 }: ButtonProps) {
   const base =
     "relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 cursor-pointer select-none";
@@ -31,7 +33,7 @@ export default function Button({
 
   if (href) {
     return (
-      <a href={href} className={classes} onClick={onClick}>
+      <a href={href} className={classes} onClick={onClick} download={download}>
         {icon && <span className="flex-shrink-0">{icon}</span>}
         {children}
       </a>

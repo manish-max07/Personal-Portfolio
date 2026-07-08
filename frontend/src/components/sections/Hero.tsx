@@ -183,8 +183,9 @@ export default function Hero() {
               </Button>
               <Button
                 variant="outline"
-                href="/resume.pdf"
+                href="/Manish_Kumar_Resume.pdf"
                 icon={<Download className="w-4 h-4" />}
+                download="Manish_Kumar_Resume.pdf"
               >
                 Download Resume
               </Button>

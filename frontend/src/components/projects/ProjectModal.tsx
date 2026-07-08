@@ -50,16 +50,6 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  // Lock body scroll while open
-  useEffect(() => {
-    if (project) {
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [project]);
-
   const prevImage = useCallback(() => {
     setCurrentImage((i) => (i === 0 ? images.length - 1 : i - 1));
   }, [images.length]);
@@ -67,6 +57,15 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const nextImage = useCallback(() => {
     setCurrentImage((i) => (i === images.length - 1 ? 0 : i + 1));
   }, [images.length]);
+
+  // Auto-play / Auto-slide carousel
+  useEffect(() => {
+    if (!project || images.length <= 1) return;
+    const timer = setInterval(() => {
+      nextImage();
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [project, images.length, nextImage, currentImage]);
 
   // Arrow key navigation for carousel
   useEffect(() => {
@@ -90,7 +89,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -110,7 +109,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             role="dialog"
             aria-modal="true"
             aria-label={project.title}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 pointer-events-none"
           >
             <div
               className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto pointer-events-auto glass rounded-2xl glow-border shadow-[0_0_80px_rgba(0,0,0,0.5)] flex flex-col"
