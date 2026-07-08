@@ -20,7 +20,13 @@ const orbitron = Orbitron({
 export const metadata: Metadata = {
   title: "Manish Kumar | Full Stack Developer",
   description:
-    "Portfolio of Manish Kumar — Full Stack Developer building scalable web apps with React, Node.js, and Python. Passionate about automation and performance.",
+    "Full Stack Developer specializing in React, Node.js, Python, and PostgreSQL. Building scalable web applications and exploring AI-powered tools.",
+  openGraph: {
+    title: "Manish Kumar | Full Stack Developer",
+    description:
+      "Full Stack Developer specializing in React, Node.js, Python, and PostgreSQL. Building scalable web applications and exploring AI-powered tools.",
+    type: "website",
+  },
   keywords: [
     "full stack developer",
     "react developer",
