@@ -8,7 +8,7 @@ const achievements = [
   {
     icon: Trophy,
     title: "Runner-Up, Smart Delhi Ideathon 2025",
-    description: "Top 100 of 53,000 teams, awarded by Delhi Govt.",
+    description: "For ShieldForShe Project , Awarded by LG Of Delhi.",
   },
   {
     icon: Award,
