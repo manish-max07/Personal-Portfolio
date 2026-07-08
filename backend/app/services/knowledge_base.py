@@ -136,6 +136,20 @@ KNOWLEDGE_BASE = [
     },
     {
         "questions": [
+            "Are you currently free?",
+            "Are you available for work?",
+            "When can you join?",
+            "What is your notice period?",
+            "Are you open to opportunities?",
+            "Can you join immediately?",
+            "What roles are you interested in?",
+            "What kind of job are you looking for?",
+            "Are you looking for a job?"
+        ],
+        "answer": "Yes, I'm currently available and can join immediately. I'm interested in roles like Software Developer, SDE, Data Analyst, and Python Developer."
+    },
+    {
+        "questions": [
             "Can I download your resume?",
             "Do you have a CV?",
             "Where can I get your resume?",
