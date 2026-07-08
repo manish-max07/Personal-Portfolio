@@ -14,7 +14,7 @@ import { getTechIcon } from "@/lib/techIcons";
 /* ── Typewriter titles ──────────────────────────────────── */
 const titles = [
   "Full Stack Developer",
-  "React & Node.js Engineer",
+  "React & Node.js Developer",
   "Python Developer",
   "Hackathon Winner",
 ];

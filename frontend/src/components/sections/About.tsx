@@ -99,13 +99,13 @@ export default function About() {
             <motion.div variants={itemVariants}>
               <div className="glass rounded-2xl p-6 sm:p-8 glow-border">
                 <p className="text-base sm:text-lg leading-relaxed text-text-secondary">
-                  I&apos;m a Computer Science undergraduate at{" "}
+                  I&apos;m a Full Stack Developer, graduated with a B.Tech in Computer Science & Engineering from{" "}
                   <span className="text-text-primary font-medium">
-                    GB Pant DSEU Okhla-1 Campus
+                    Delhi Skill & Entrepreneurship University
                   </span>{" "}
-                  (B.Tech, GPA{" "}
+                  in July 2026, with a CGPA of{" "}
                   <span className="text-accent-cyan font-semibold">8.20</span>,
-                  graduating 2026), passionate about automation, performance
+                  passionate about automation, performance
                   optimization, and crafting seamless user experiences.
                 </p>
                 <p className="text-base sm:text-lg leading-relaxed text-text-secondary mt-4">
