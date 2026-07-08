@@ -201,24 +201,13 @@ export default function Projects() {
                   <motion.div
                     key={project.id}
                     variants={cardVariants}
-                    className="group glass rounded-2xl glow-border glow-border-hover transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer relative"
+                    className="group glass rounded-2xl overflow-hidden glow-border glow-border-hover transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
                     onClick={() => setSelectedProject(project)}
                   >
                     {/* Top gradient accent */}
-                    <div className="h-1 bg-gradient-to-r from-accent-cyan/60 via-cyan-glow/30 to-transparent group-hover:from-accent-cyan group-hover:via-cyan-glow/50 transition-all duration-500 z-10 rounded-t-2xl" />
+                    <div className="h-1 bg-gradient-to-r from-accent-cyan/60 via-cyan-glow/30 to-transparent group-hover:from-accent-cyan group-hover:via-cyan-glow/50 transition-all duration-500" />
 
-                    {/* Hover peeping background icon */}
-                    {projectIcon && (
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none z-[-1] opacity-0 scale-75 translate-y-2 transition-all duration-500 ease-out group-hover:-translate-y-1/2 group-hover:opacity-90 group-hover:scale-100">
-                        <img
-                          src={projectIcon}
-                          alt=""
-                          className="w-16 h-16 object-contain drop-shadow-[0_0_15px_rgba(34,200,255,0.5)]"
-                        />
-                      </div>
-                    )}
-
-                    <div className="p-5 sm:p-6 flex flex-col flex-1 relative z-10 bg-dark-navy/40 rounded-2xl">
+                    <div className="p-5 sm:p-6 flex flex-col flex-1">
                       {/* Title */}
                       <div className="flex items-start gap-3 mb-3">
                         <div className="w-8 h-8 rounded-lg glass flex items-center justify-center flex-shrink-0 mt-0.5 overflow-hidden group-hover:shadow-[0_0_16px_rgba(34,200,255,0.3)] transition-shadow duration-300">

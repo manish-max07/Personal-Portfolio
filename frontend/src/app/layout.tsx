@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "Manish Kumar | Full Stack Developer",
   description:
     "Full Stack Developer specializing in React, Node.js, Python, and PostgreSQL. Building scalable web applications and exploring AI-powered tools.",
+  icons: {
+    icon: "/ManishAnime.png",
+  },
   openGraph: {
     title: "Manish Kumar | Full Stack Developer",
     description:
