@@ -11,4 +11,5 @@ class Project(Base):
     tech_stack = Column(String(300), nullable=False)
     github_url = Column(String(300), nullable=True)
     live_url = Column(String(300), nullable=True)
+    image_urls = Column(Text, nullable=True)  # comma-separated list of image URLs
     created_at = Column(DateTime(timezone=True), server_default=func.now())
