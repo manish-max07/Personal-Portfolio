@@ -112,7 +112,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 pointer-events-none"
           >
             <div
-              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto pointer-events-auto glass rounded-2xl glow-border shadow-[0_0_80px_rgba(0,0,0,0.5)] flex flex-col"
+              className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto pointer-events-auto glass rounded-2xl glow-border shadow-[0_0_80px_rgba(0,0,0,0.5)] flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
