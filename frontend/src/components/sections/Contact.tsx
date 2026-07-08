@@ -17,11 +17,11 @@ import api from "@/lib/api";
 
 /* ── Social links ───────────────────────────────────────── */
 const socials = [
-  { icon: Mail, label: "Email", href: "#" },
-  { icon: Link2, label: "LinkedIn", href: "#" },
-  { icon: GitBranch, label: "GitHub", href: "#" },
-  { icon: Play, label: "YouTube", href: "#" },
-  { icon: Globe, label: "Portfolio", href: "#" },
+  { icon: Mail, label: "Email", href: "manishkumar995852@gmail.com" },
+  { icon: Link2, label: "LinkedIn", href: "https://www.linkedin.com/in/manish-kumar-35484a207" },
+  { icon: GitBranch, label: "GitHub", href: "https://github.com/manish-max07" },
+  { icon: Play, label: "YouTube", href: "https://www.youtube.com/@ItsManishMax" },
+  { icon: Globe, label: "Portfolio", href: "https://manish-kumar-portfolio-omega.vercel.app" },
 ];
 
 /* ── Animation variants ─────────────────────────────────── */
