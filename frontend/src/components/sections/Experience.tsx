@@ -6,7 +6,7 @@ import { Briefcase, Calendar, ChevronRight } from "lucide-react";
 /* ── Timeline data ──────────────────────────────────────── */
 const experiences = [
   {
-    role: "Full Stack Developer Intern",
+    role: "Full Stack Developer Intern (6 Months Internship)",
     company: "Delhi Skill and Entrepreneurship University (DSEU)",
     duration: "May 2025 – Nov 2025",
     bullets: [
@@ -15,6 +15,16 @@ const experiences = [
       "Backend: RESTful API using Node.js, Express.js, and TypeScript with modular architecture (controllers, services, middleware) for authentication and data validation",
       "Database: designed and managed PostgreSQL database with custom migration system, complex queries for student records, exam registration, and result management",
       "Automation & DevOps: integrated CI/CD pipelines, PM2 for deployment, and Postman for testing and documentation",
+    ],
+  },
+  {
+    role: "Summer Internship",
+    company: "All India Council for Technical Education (AICTE)",
+    duration: "Jun 2024 - Jul 2024 (2 months)",
+    bullets: [
+      "Completed IBM-focused curriculum and training to learn cloud computing and artificial intelligence paradigms",
+      "Earned professional certification: 'Journey to Cloud : Envisioning Your Solution' by IBM",
+      "Earned professional certification: 'IBM Artificial Intelligence' by IBM",
     ],
   },
 ];

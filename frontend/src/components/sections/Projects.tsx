@@ -186,7 +186,8 @@ export default function Projects() {
                   <motion.div
                     key={project.id}
                     variants={cardVariants}
-                    className="group glass rounded-2xl overflow-hidden glow-border glow-border-hover transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                    className="group glass rounded-2xl overflow-hidden glow-border glow-border-hover transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
+                    onClick={() => setSelectedProject(project)}
                   >
                     {/* Top gradient accent */}
                     <div className="h-1 bg-gradient-to-r from-accent-cyan/60 via-cyan-glow/30 to-transparent group-hover:from-accent-cyan group-hover:via-cyan-glow/50 transition-all duration-500" />
@@ -233,39 +234,31 @@ export default function Projects() {
                       </div>
 
                       {/* Action row */}
-                      <div className="flex items-center gap-2 pt-3 border-t border-white/5">
-                        {/* Know More */}
-                        <button
-                          onClick={() => setSelectedProject(project)}
-                          className="inline-flex items-center gap-1.5 text-xs font-medium text-accent-cyan glass border border-accent-cyan/20 px-3 py-1.5 rounded-lg hover:border-accent-cyan/50 hover:shadow-[0_0_12px_rgba(34,200,255,0.2)] transition-all duration-300 cursor-pointer"
-                        >
-                          Know More
-                        </button>
-
-                        <div className="flex items-center gap-2 ml-auto">
-                          {project.live_url && (
-                            <a
-                              href={project.live_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-accent-cyan transition-colors duration-300"
-                            >
-                              <ExternalLink className="w-3.5 h-3.5" />
-                              <span>Demo</span>
-                            </a>
-                          )}
-                          {project.github_url && (
-                            <a
-                              href={project.github_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-accent-cyan transition-colors duration-300"
-                            >
-                              <FaGithub className="w-3.5 h-3.5" />
-                              <span>GitHub</span>
-                            </a>
-                          )}
-                        </div>
+                      <div className="flex items-center justify-center gap-6 pt-3 border-t border-white/5">
+                        {project.live_url && (
+                          <a
+                            href={project.live_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-accent-cyan transition-colors duration-300"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                            <span>Demo</span>
+                          </a>
+                        )}
+                        {project.github_url && (
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-accent-cyan transition-colors duration-300"
+                          >
+                            <FaGithub className="w-3.5 h-3.5" />
+                            <span>GitHub</span>
+                          </a>
+                        )}
                       </div>
                     </div>
                   </motion.div>

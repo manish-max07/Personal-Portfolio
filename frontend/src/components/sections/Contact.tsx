@@ -19,7 +19,6 @@ const socials = [
   { icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/manish-kumar-35484a207", color: "#0A66C2" },
   { icon: FaGithub, label: "GitHub", href: "https://github.com/manish-max07", color: "#E2E8F0" },
   { icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/@ItsManishMax", color: "#FF0000" },
-  { icon: Globe, label: "Portfolio", href: "https://manish-kumar-portfolio-omega.vercel.app", color: "#22C8FF" },
 ];
 
 /* ── Animation variants ─────────────────────────────────── */
@@ -83,7 +82,7 @@ export default function Contact() {
     } else if (message.trim().length > 2000) {
       newErrors.message = "Message must be less than 2000 characters.";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
