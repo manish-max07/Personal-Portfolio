@@ -195,18 +195,30 @@ export default function Projects() {
                   .split(",")
                   .map((t) => t.trim())
                   .filter(Boolean);
+                const projectIcon = getProjectIcon(project.title);
 
                 return (
                   <motion.div
                     key={project.id}
                     variants={cardVariants}
-                    className="group glass rounded-2xl overflow-hidden glow-border glow-border-hover transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
+                    className="group glass rounded-2xl overflow-hidden glow-border glow-border-hover transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer relative"
                     onClick={() => setSelectedProject(project)}
                   >
                     {/* Top gradient accent */}
-                    <div className="h-1 bg-gradient-to-r from-accent-cyan/60 via-cyan-glow/30 to-transparent group-hover:from-accent-cyan group-hover:via-cyan-glow/50 transition-all duration-500" />
+                    <div className="h-1 bg-gradient-to-r from-accent-cyan/60 via-cyan-glow/30 to-transparent group-hover:from-accent-cyan group-hover:via-cyan-glow/50 transition-all duration-500 z-10" />
 
-                    <div className="p-5 sm:p-6 flex flex-col flex-1">
+                    {/* Hover watermark background icon */}
+                    {projectIcon && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0">
+                        <img
+                          src={projectIcon}
+                          alt=""
+                          className="w-24 h-24 sm:w-28 sm:h-28 object-contain opacity-[0.03] group-hover:opacity-[0.12] scale-90 group-hover:scale-110 blur-[3px] group-hover:blur-[1.5px] transition-all duration-700 ease-out"
+                        />
+                      </div>
+                    )}
+
+                    <div className="p-5 sm:p-6 flex flex-col flex-1 relative z-10">
                       {/* Title */}
                       <div className="flex items-start gap-3 mb-3">
                         <div className="w-8 h-8 rounded-lg glass flex items-center justify-center flex-shrink-0 mt-0.5 overflow-hidden group-hover:shadow-[0_0_16px_rgba(34,200,255,0.3)] transition-shadow duration-300">
