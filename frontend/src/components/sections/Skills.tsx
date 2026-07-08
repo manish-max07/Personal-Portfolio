@@ -9,6 +9,7 @@ import {
   Wrench,
   Brain,
 } from "lucide-react";
+import { getTechIcon } from "@/lib/techIcons";
 
 /* ── Skill categories ───────────────────────────────────── */
 const categories = [
@@ -25,7 +26,7 @@ const categories = [
   {
     title: "Backend",
     icon: Server,
-    skills: ["Node.js", "Express.js", "RESTful APIs", "Microservices"],
+    skills: ["Node.js", "Express.js", "FastAPI", "RESTful APIs", "Microservices"],
   },
   {
     title: "Databases",
@@ -131,16 +132,24 @@ export default function Skills() {
                   </h3>
                 </div>
 
-                {/* Skill pills */}
+                {/* Skill pills with brand icons */}
                 <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-accent-cyan bg-accent-cyan/5 border border-accent-cyan/15 hover:border-accent-cyan/40 hover:bg-accent-cyan/10 hover:shadow-[0_0_10px_rgba(34,200,255,0.15)] transition-all duration-300 cursor-default"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+                  {category.skills.map((skill) => {
+                    const techIcon = getTechIcon(skill);
+                    return (
+                      <span
+                        key={skill}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-accent-cyan/5 border border-accent-cyan/15 hover:border-accent-cyan/40 hover:bg-accent-cyan/10 hover:shadow-[0_0_10px_rgba(34,200,255,0.15)] transition-all duration-300 cursor-default"
+                        style={{ color: techIcon.color }}
+                      >
+                        <techIcon.icon
+                          className="w-3.5 h-3.5 flex-shrink-0"
+                          style={{ color: techIcon.color }}
+                        />
+                        {skill}
+                      </span>
+                    );
+                  })}
                 </div>
               </motion.div>
             ))}

@@ -3,25 +3,23 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Mail,
   Send,
   Loader2,
   Check,
   AlertCircle,
   Globe,
-  GitBranch,
-  Play,
-  Link2,
 } from "lucide-react";
+import { FaLinkedin, FaGithub, FaYoutube } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 import api from "@/lib/api";
 
 /* ── Social links ───────────────────────────────────────── */
 const socials = [
-  { icon: Mail, label: "Email", href: "manishkumar995852@gmail.com" },
-  { icon: Link2, label: "LinkedIn", href: "https://www.linkedin.com/in/manish-kumar-35484a207" },
-  { icon: GitBranch, label: "GitHub", href: "https://github.com/manish-max07" },
-  { icon: Play, label: "YouTube", href: "https://www.youtube.com/@ItsManishMax" },
-  { icon: Globe, label: "Portfolio", href: "https://manish-kumar-portfolio-omega.vercel.app" },
+  { icon: MdEmail, label: "Email", href: "mailto:manishkumar995852@gmail.com", color: "#EA4335" },
+  { icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/manish-kumar-35484a207", color: "#0A66C2" },
+  { icon: FaGithub, label: "GitHub", href: "https://github.com/manish-max07", color: "#E2E8F0" },
+  { icon: FaYoutube, label: "YouTube", href: "https://www.youtube.com/@ItsManishMax", color: "#FF0000" },
+  { icon: Globe, label: "Portfolio", href: "https://manish-kumar-portfolio-omega.vercel.app", color: "#22C8FF" },
 ];
 
 /* ── Animation variants ─────────────────────────────────── */
@@ -292,8 +290,11 @@ export default function Contact() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all duration-300 group"
                     >
-                      <div className="w-9 h-9 rounded-lg glass flex items-center justify-center group-hover:shadow-[0_0_16px_rgba(34,200,255,0.3)] transition-shadow duration-300">
-                        <social.icon className="w-4 h-4 text-accent-cyan" />
+                      <div className="w-9 h-9 rounded-lg glass flex items-center justify-center transition-shadow duration-300 group-hover:shadow-[0_0_16px_rgba(34,200,255,0.2)]">
+                        <social.icon
+                          className="w-4 h-4 transition-all duration-300"
+                          style={{ color: social.color }}
+                        />
                       </div>
                       <span className="text-sm text-text-secondary group-hover:text-accent-cyan transition-colors duration-300">
                         {social.label}
