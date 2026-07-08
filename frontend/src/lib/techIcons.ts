@@ -21,7 +21,7 @@ import {
   SiTailwindcss,
   SiExpress,
   SiHtml5,
-  SiCss3,
+  SiCss,
   SiCplusplus,
   SiPostman,
   SiVercel,
@@ -29,9 +29,8 @@ import {
   SiRedis,
   SiGraphql,
   SiFirebase,
-  SiAmazon,
 } from "react-icons/si";
-import { FaCode } from "react-icons/fa";
+import { FaCode, FaAws } from "react-icons/fa";
 
 interface TechIconEntry {
   icon: IconType;
@@ -52,7 +51,7 @@ const techIconMap: Record<string, TechIconEntry> = {
   "next.js": { icon: SiNextdotjs, color: "#E2E8F0" },
   nextjs: { icon: SiNextdotjs, color: "#E2E8F0" },
   html5: { icon: SiHtml5, color: "#E34F26" },
-  css3: { icon: SiCss3, color: "#1572B6" },
+  css3: { icon: SiCss, color: "#1572B6" },
   "tailwind css": { icon: SiTailwindcss, color: "#06B6D4" },
   tailwind: { icon: SiTailwindcss, color: "#06B6D4" },
 
@@ -76,7 +75,7 @@ const techIconMap: Record<string, TechIconEntry> = {
   git: { icon: SiGit, color: "#F05032" },
   postman: { icon: SiPostman, color: "#FF6C37" },
   vercel: { icon: SiVercel, color: "#E2E8F0" },
-  aws: { icon: SiAmazon, color: "#FF9900" },
+  aws: { icon: FaAws, color: "#FF9900" },
   graphql: { icon: SiGraphql, color: "#E10098" },
 };
 
