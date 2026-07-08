@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
-import api from "@/lib/api";
+import axios from "axios";
 
 /* ── Types ──────────────────────────────────────────────── */
 interface Message {
@@ -63,8 +63,9 @@ export default function ChatbotWidget() {
     setSending(true);
 
     try {
-      const response = await api.post<{ answer: string; confidence: number }>(
-        "/chatbot/ask",
+      const chatbotUrl = process.env.NEXT_PUBLIC_CHATBOT_API_URL || "http://localhost:8001";
+      const response = await axios.post<{ answer: string; confidence: number }>(
+        `${chatbotUrl}/chatbot/ask`,
         { message: text }
       );
 
