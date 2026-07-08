@@ -19,24 +19,35 @@ const titles = [
   "Hackathon Winner",
 ];
 
-function useTypewriter(words: string[], typingSpeed = 80, deletingSpeed = 40, pauseDuration = 2000) {
+function useTypewriter(words: string[], typingSpeed = 80, deletingSpeed = 40, pauseDuration = 6000) {
   const [displayText, setDisplayText] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const currentWord = words[wordIndex];
 
+    if (isPaused) {
+      const timeout = setTimeout(() => {
+        setIsPaused(false);
+        setIsDeleting(true);
+      }, pauseDuration);
+      return () => clearTimeout(timeout);
+    }
+
     const timeout = setTimeout(
       () => {
         if (!isDeleting) {
-          setDisplayText(currentWord.slice(0, displayText.length + 1));
-          if (displayText.length + 1 === currentWord.length) {
-            setTimeout(() => setIsDeleting(true), pauseDuration);
+          const nextText = currentWord.slice(0, displayText.length + 1);
+          setDisplayText(nextText);
+          if (nextText === currentWord) {
+            setIsPaused(true);
           }
         } else {
-          setDisplayText(currentWord.slice(0, displayText.length - 1));
-          if (displayText.length === 0) {
+          const nextText = currentWord.slice(0, displayText.length - 1);
+          setDisplayText(nextText);
+          if (nextText === "") {
             setIsDeleting(false);
             setWordIndex((prev) => (prev + 1) % words.length);
           }
@@ -46,7 +57,7 @@ function useTypewriter(words: string[], typingSpeed = 80, deletingSpeed = 40, pa
     );
 
     return () => clearTimeout(timeout);
-  }, [displayText, wordIndex, isDeleting, words, typingSpeed, deletingSpeed, pauseDuration]);
+  }, [displayText, wordIndex, isDeleting, isPaused, words, typingSpeed, deletingSpeed, pauseDuration]);
 
   return displayText;
 }
