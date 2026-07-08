@@ -216,7 +216,7 @@ export default function Hero() {
               <div className="absolute inset-[25%] rounded-full bg-deep-blue/80 glass glow-border flex items-center justify-center overflow-hidden">
                 <div className="relative w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br from-deep-blue to-dark-navy overflow-hidden">
                   <Image
-                    src="/ManishAnime.png"
+                    src="/ManishProfile.png"
                     alt="Manish Profile"
                     fill
                     className="object-cover"
