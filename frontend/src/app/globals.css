@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* ── Cyberpunk Design Tokens ─────────────────────────────── */
+:root {
+  --bg-dark-navy: #090F1B;
+  --bg-deep-blue: #0E1627;
+  --accent-cyan: #22C8FF;
+  --accent-cyan-glow: #39E5FF;
+  --text-white: #F5F7FA;
+  --text-gray: #8C95A5;
+  --status-green: #00FF88;
+
+  --font-space-grotesk: var(--font-space-grotesk-loaded);
+  --font-orbitron: var(--font-orbitron-loaded);
+}
+
+/* ── Tailwind v4 Theme Extension ─────────────────────────── */
+@theme inline {
+  --color-dark-navy: var(--bg-dark-navy);
+  --color-deep-blue: var(--bg-deep-blue);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-cyan-glow: var(--accent-cyan-glow);
+  --color-text-primary: var(--text-white);
+  --color-text-secondary: var(--text-gray);
+  --color-status-green: var(--status-green);
+
+  --font-sans: var(--font-space-grotesk);
+  --font-display: var(--font-orbitron);
+}
+
+/* ── Base Styles ─────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-dark-navy);
+  color: var(--text-white);
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: rgba(34, 200, 255, 0.3);
+  color: var(--text-white);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark-navy);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(34, 200, 255, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 200, 255, 0.5);
+}
+
+/* ── Glow Keyframes ──────────────────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(34, 200, 255, 0.4), 0 0 20px rgba(34, 200, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(34, 200, 255, 0.6), 0 0 40px rgba(34, 200, 255, 0.25);
+  }
+}
+
+@keyframes text-glow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(34, 200, 255, 0.5), 0 0 30px rgba(34, 200, 255, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(34, 200, 255, 0.7), 0 0 50px rgba(34, 200, 255, 0.3);
+  }
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(0, 255, 136, 0.6);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.9), 0 0 24px rgba(0, 255, 136, 0.4);
+    opacity: 0.7;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Utility Classes ─────────────────────────────────────── */
+.glass {
+  background: rgba(14, 22, 39, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(34, 200, 255, 0.1);
+}
+
+.glass-strong {
+  background: rgba(14, 22, 39, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(34, 200, 255, 0.15);
+}
+
+.text-glow-cyan {
+  color: var(--accent-cyan);
+  animation: text-glow 3s ease-in-out infinite;
+}
+
+.glow-border {
+  box-shadow: 0 0 8px rgba(34, 200, 255, 0.3), inset 0 0 8px rgba(34, 200, 255, 0.05);
+  border: 1px solid rgba(34, 200, 255, 0.2);
+}
+
+.glow-border-hover {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.glow-border-hover:hover {
+  box-shadow: 0 0 16px rgba(34, 200, 255, 0.5), 0 0 40px rgba(34, 200, 255, 0.15), inset 0 0 12px rgba(34, 200, 255, 0.08);
+  border-color: rgba(57, 229, 255, 0.4);
+}
+
+/* ── Grid Background Layer ───────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(34, 200, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 200, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── Radial Glow Layer ───────────────────────────────────── */
+.bg-radial-glow {
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 40%,
+    rgba(34, 200, 255, 0.06) 0%,
+    rgba(14, 22, 39, 0.02) 50%,
+    transparent 100%
+  );
+}
+
+/* ── Neon text shadow shorthand ──────────────────────────── */
+.neon-cyan {
+  text-shadow: 0 0 10px rgba(34, 200, 255, 0.5), 0 0 30px rgba(34, 200, 255, 0.2), 0 0 60px rgba(34, 200, 255, 0.1);
+}
