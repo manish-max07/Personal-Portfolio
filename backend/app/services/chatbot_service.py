@@ -8,6 +8,10 @@ _kb_answer_map = None
 def _load_model():
     global _model, _kb_embeddings, _kb_answer_map
     if _model is None:
+        import torch
+        torch.set_grad_enabled(False)
+        torch.set_num_threads(1)
+        
         from sentence_transformers import SentenceTransformer  # deferred import
         _model = SentenceTransformer("all-MiniLM-L6-v2")
 
