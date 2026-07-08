@@ -1,13 +1,14 @@
-from sentence_transformers import SentenceTransformer
 import numpy as np
 from app.services.knowledge_base import KNOWLEDGE_BASE
 
 _model = None
 _kb_embeddings = None
+_kb_answer_map = None
 
 def _load_model():
     global _model, _kb_embeddings, _kb_answer_map
     if _model is None:
+        from sentence_transformers import SentenceTransformer  # deferred import
         _model = SentenceTransformer("all-MiniLM-L6-v2")
 
         all_questions = []
