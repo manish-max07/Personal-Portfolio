@@ -4,6 +4,7 @@ import "./globals.css";
 import ParticleBackground from "@/components/background/ParticleBackground";
 import Navbar from "@/components/layout/Navbar";
 import ChatbotWidget from "@/components/chatbot/ChatbotWidget";
+import Footer from "@/components/layout/Footer";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk-loaded",
@@ -52,6 +53,7 @@ export default function RootLayout({
         <ParticleBackground />
         <Navbar />
         <main className="relative z-10 flex-1">{children}</main>
+        <Footer />
         <ChatbotWidget />
       </body>
     </html>

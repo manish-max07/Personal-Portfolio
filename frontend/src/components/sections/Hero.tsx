@@ -4,20 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
-  User,
-  Code,
-  Server,
-  Terminal,
-  Database,
-  Container,
-  FileCode,
-  Cloud,
-  GitBranch,
   Trophy,
   ArrowRight,
   Download,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { getTechIcon } from "@/lib/techIcons";
 
 /* ── Typewriter titles ──────────────────────────────────── */
 const titles = [
@@ -61,14 +53,14 @@ function useTypewriter(words: string[], typingSpeed = 80, deletingSpeed = 40, pa
 
 /* ── Orbiting skill badges ──────────────────────────────── */
 const skills = [
-  { icon: Code, label: "React" },
-  { icon: Server, label: "Node.js" },
-  { icon: Terminal, label: "Python" },
-  { icon: Database, label: "Database" },
-  { icon: Container, label: "Docker" },
-  { icon: FileCode, label: "TypeScript" },
-  { icon: Cloud, label: "Cloud" },
-  { icon: GitBranch, label: "Git" },
+  { label: "React" },
+  { label: "Node.js" },
+  { label: "Python" },
+  { label: "PostgreSQL" },
+  { label: "Docker" },
+  { label: "TypeScript" },
+  { label: "AWS" },
+  { label: "Git" },
 ];
 
 /* ── Stagger animation variants ─────────────────────────── */
@@ -224,69 +216,74 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Orbiting skill badges — desktop: orbit animation, mobile: static ring */}
-              {!isMobile ? (
-                /* Desktop: animated orbit */
-                skills.map((skill, index) => {
-                  const angle = (360 / skills.length) * index;
-                  const duration = 30 + index * 2; // Slight speed variation
-                  return (
-                    <div
-                      key={skill.label}
-                      className="absolute top-1/2 left-1/2 w-0 h-0"
-                      style={{
-                        animation: `orbit ${duration}s linear infinite`,
-                        animationDelay: `${-(duration / skills.length) * index}s`,
-                        ["--orbit-radius" as string]: "170px",
-                        transform: `rotate(${angle}deg) translateX(170px) rotate(-${angle}deg)`,
-                      }}
-                    >
-                      <div className="relative -top-5 -left-5 w-10 h-10 rounded-xl glass glow-border flex items-center justify-center group transition-all duration-300 hover:scale-110">
-                        <skill.icon className="w-4 h-4 text-accent-cyan" />
+              {/* Orbiting skill badges — desktop & mobile (orbit radius adapts to viewport) */}
+              {skills.map((skill, index) => {
+                const angle = (360 / skills.length) * index;
+                const duration = 30 + index * 2; // Slight speed variation
+                const techIcon = getTechIcon(skill.label);
+                const radius = isMobile ? 120 : 170;
+                return (
+                  <div
+                    key={skill.label}
+                    className="absolute top-1/2 left-1/2 w-0 h-0"
+                    style={{
+                      animation: `orbit ${duration}s linear infinite`,
+                      animationDelay: `${-(duration / skills.length) * index}s`,
+                      ["--orbit-radius" as string]: `${radius}px`,
+                      transform: `rotate(${angle}deg) translateX(${radius}px) rotate(-${angle}deg)`,
+                    }}
+                  >
+                    <div className="relative -top-5 -left-5 w-10 h-10 rounded-xl glass glow-border flex items-center justify-center group transition-all duration-300 hover:scale-110">
+                      <techIcon.icon
+                        className="w-4 h-4 transition-colors duration-300"
+                        style={{ color: techIcon.color }}
+                      />
+                      {!isMobile && (
                         <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-[family-name:var(--font-orbitron)]">
                           {skill.label}
                         </span>
-                      </div>
+                      )}
                     </div>
-                  );
-                })
-              ) : (
-                /* Mobile: static grid below the circle — rendered outside this container */
-                null
-              )}
+                  </div>
+                );
+              })}
 
-              {/* Hackathon winner badge */}
+              {/* 3x Hackathon Winner badge */}
               <motion.div
-                className="absolute -right-2 top-6 sm:-right-4 sm:top-8"
+                className="absolute -right-2 top-6 sm:-right-4 sm:top-8 z-20"
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass glow-border text-xs font-medium text-accent-cyan whitespace-nowrap">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass glow-border text-[10px] sm:text-xs font-medium text-accent-cyan whitespace-nowrap">
                   <Trophy className="w-3.5 h-3.5 text-yellow-400" />
                   3x Hackathon Winner
                 </div>
               </motion.div>
-            </div>
 
-            {/* Mobile: static skill badges row */}
-            {isMobile && (
+              {/* Awarded by Delhi Govt badge */}
               <motion.div
-                className="flex flex-wrap justify-center gap-2 mt-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
+                className="absolute -left-10 top-20 sm:-left-16 sm:top-24 z-20"
+                animate={{ y: [0, 6, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
               >
-                {skills.map((skill) => (
-                  <div
-                    key={skill.label}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg glass glow-border text-xs text-accent-cyan"
-                  >
-                    <skill.icon className="w-3.5 h-3.5" />
-                    {skill.label}
-                  </div>
-                ))}
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass glow-border text-[10px] sm:text-xs font-medium text-accent-cyan whitespace-nowrap">
+                  <Trophy className="w-3.5 h-3.5 text-yellow-400" />
+                  Awarded by Delhi Govt
+                </div>
               </motion.div>
-            )}
+
+              {/* Awarded by LG of Delhi badge */}
+              <motion.div
+                className="absolute -right-6 bottom-16 sm:-right-10 sm:bottom-20 z-20"
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              >
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass glow-border text-[10px] sm:text-xs font-medium text-accent-cyan whitespace-nowrap">
+                  <Trophy className="w-3.5 h-3.5 text-yellow-400" />
+                  Awarded by LG of Delhi
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
