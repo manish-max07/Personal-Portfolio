@@ -8,9 +8,16 @@ from app.routers import projects, blog, contact
 from app.routers import projects, blog, contact, chatbot
 from app.routers import projects, blog, contact, chatbot, auth
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from app.rate_limiter import limiter
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Manish Kumar Portfolio API")
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,

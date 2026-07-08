@@ -75,13 +75,18 @@ export default function ChatbotWidget() {
             : m
         )
       );
-    } catch {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { status?: number } };
+      const errorMsg = axiosErr.response?.status === 429 
+        ? "You are spamming, try after some time." 
+        : "Sorry, I couldn't process that — please try again.";
+
       setMessages((prev) =>
         prev.map((m) =>
           m.id === loadingMsg.id
             ? {
                 ...m,
-                text: "Sorry, I couldn't process that — please try again.",
+                text: errorMsg,
                 loading: false,
               }
             : m
@@ -233,6 +238,7 @@ export default function ChatbotWidget() {
                   onKeyDown={handleKeyDown}
                   placeholder="Ask me anything..."
                   disabled={sending}
+                  maxLength={200}
                   className="flex-1 px-3 py-2.5 rounded-xl bg-dark-navy/60 border border-white/10 text-sm text-text-primary placeholder-text-secondary/50 outline-none focus:border-accent-cyan/50 focus:shadow-[0_0_12px_rgba(34,200,255,0.1)] transition-all duration-300 disabled:opacity-50"
                 />
                 <button

@@ -1,17 +1,19 @@
 from app.auth.dependencies import get_current_user
 from app.models.user import User
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.database import get_db
 from app.models.contact_message import ContactMessage
 from app.schemas.contact_message import ContactMessageCreate, ContactMessageResponse
+from app.rate_limiter import limiter
 
 router = APIRouter(prefix="/contact", tags=["Contact"])
 
 @router.post("/", response_model=ContactMessageResponse)
-def create_message(msg: ContactMessageCreate, db: Session = Depends(get_db)):
+@limiter.limit("3/hour")
+def create_message(request: Request, msg: ContactMessageCreate, db: Session = Depends(get_db)):
     db_msg = ContactMessage(**msg.model_dump())
     db.add(db_msg)
     db.commit()

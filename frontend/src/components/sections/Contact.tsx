@@ -64,13 +64,26 @@ export default function Contact() {
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!name.trim()) newErrors.name = "Name is required.";
+    if (!name.trim()) {
+      newErrors.name = "Name is required.";
+    } else if (name.trim().length > 100) {
+      newErrors.name = "Name must be less than 100 characters.";
+    }
+
     if (!email.trim()) {
       newErrors.email = "Email is required.";
+    } else if (email.trim().length > 100) {
+      newErrors.email = "Email must be less than 100 characters.";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       newErrors.email = "Please enter a valid email.";
     }
-    if (!message.trim()) newErrors.message = "Message is required.";
+
+    if (!message.trim()) {
+      newErrors.message = "Message is required.";
+    } else if (message.trim().length > 2000) {
+      newErrors.message = "Message must be less than 2000 characters.";
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -94,7 +107,9 @@ export default function Contact() {
       setMessage("");
     } catch (err: unknown) {
       const axiosErr = err as { response?: { status?: number; data?: { detail?: Array<{ loc?: string[]; msg?: string }> } } };
-      if (axiosErr.response?.status === 422 && axiosErr.response?.data?.detail) {
+      if (axiosErr.response?.status === 429) {
+        setErrors({ general: "You are spamming, try after some time." });
+      } else if (axiosErr.response?.status === 422 && axiosErr.response?.data?.detail) {
         const fieldErrors: FormErrors = {};
         for (const d of axiosErr.response.data.detail) {
           const field = d.loc?.[d.loc.length - 1];
@@ -198,6 +213,7 @@ export default function Contact() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your name"
+                      maxLength={100}
                       className={`${inputBase} ${errors.name ? "border-red-500/50" : ""}`}
                     />
                     {errors.name && (
@@ -219,6 +235,7 @@ export default function Contact() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="your@email.com"
+                      maxLength={100}
                       className={`${inputBase} ${errors.email ? "border-red-500/50" : ""}`}
                     />
                     {errors.email && (
@@ -240,6 +257,7 @@ export default function Contact() {
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Tell me about your project..."
                       rows={5}
+                      maxLength={2000}
                       className={`${inputBase} resize-none ${errors.message ? "border-red-500/50" : ""}`}
                     />
                     {errors.message && (
