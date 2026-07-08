@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   User,
   Code,
@@ -211,10 +212,15 @@ export default function Hero() {
               <div className="absolute inset-4 sm:inset-6 lg:inset-8 rounded-full border border-accent-cyan/10" />
               <div className="absolute inset-0 rounded-full border border-accent-cyan/5" />
 
-              {/* Profile photo placeholder */}
+              {/* Profile photo */}
               <div className="absolute inset-[25%] rounded-full bg-deep-blue/80 glass glow-border flex items-center justify-center overflow-hidden">
-                <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br from-deep-blue to-dark-navy">
-                  <User className="w-16 h-16 sm:w-20 sm:h-20 text-accent-cyan/40" strokeWidth={1} />
+                <div className="relative w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br from-deep-blue to-dark-navy overflow-hidden">
+                  <Image
+                    src="/ManishAnime.png"
+                    alt="Manish Profile"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
 
