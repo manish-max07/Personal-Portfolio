@@ -148,4 +148,4 @@ Ensure you have the following installed on your machine:
 Developed by **Manish Kumar**.
 - **LinkedIn**: [Manish Kumar](https://www.linkedin.com/in/manish-kumar-35484a207)
 - **GitHub**: [@manish-max07](https://github.com/manish-max07)
-- **Email**: manishwork07@gmail.com
+
