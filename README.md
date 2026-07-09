@@ -3,6 +3,20 @@
 Welcome to my personal portfolio repository! This is a modern, high-performance, and visually stunning web application built to showcase my selected work, work experience, technical skills, and achievements. The repository is structured as a monorepo featuring a Next.js frontend, a FastAPI core backend, and a specialized PyTorch-powered AI chatbot backend for semantic search.
 
 ---
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://res.cloudinary.com/ddiw6optp/image/upload/v1783535729/ezgif-3685094a82012f26_g2stw4.gif"
+           alt="Manish Kumar coding GIF"
+           width="256" />
+    </td>
+    <td align="center">
+      <img src="https://res.cloudinary.com/ddiw6optp/image/upload/v1783606420/ManishPortfolioGIF_nmctfq.gif"
+           alt="Manish Portfolio GIF"
+           width="256" />
+    </td>
+  </tr>
+</table>
 
 ## 🏗️ Repository Architecture
 
