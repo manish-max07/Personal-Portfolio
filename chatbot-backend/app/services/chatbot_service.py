@@ -315,6 +315,16 @@ def _call_groq_http(api_key: str, model_name: str, messages: list) -> str:
         print(f"[CHATBOT] Groq HTTP {err.code} error: {err_body}")
         raise RuntimeError(f"Groq API HTTP {err.code}: {err_body}") from err
 
+def _clean_text(text: str) -> str:
+    import re
+    # Separate inline numbered points (e.g. alerts. **2. FinSafe**)
+    text = re.sub(r'([.!?])\s+(\*\*\d+\.)', r'\1\n\n\2', text)
+    # Separate inline bullet dashes (e.g. Ideathon 2025. - Achievements:)
+    text = re.sub(r'([.!?])\s+-\s+([A-Z])', r'\1\n- \2', text)
+    # Separate contact items
+    text = re.sub(r'(\*\*(Email|LinkedIn|GitHub|Phone|Contact)\*\*:?)', r'\n\1', text)
+    return text.strip()
+
 def _get_groq_answer(user_question: str, api_key: str) -> dict:
     import time
     start_time = time.time()
@@ -327,7 +337,8 @@ def _get_groq_answer(user_question: str, api_key: str) -> dict:
 
     try:
         print(f"[CHATBOT] Querying Groq with model: {model_name}...")
-        answer_text = _call_groq_http(api_key, model_name, messages)
+        raw_answer = _call_groq_http(api_key, model_name, messages)
+        answer_text = _clean_text(raw_answer)
         elapsed = time.time() - start_time
         print(f"[CHATBOT] Groq responded successfully via {model_name} in {elapsed:.2f}s")
         return {
@@ -340,11 +351,13 @@ def _get_groq_answer(user_question: str, api_key: str) -> dict:
         if model_name != "llama-3.3-70b-versatile":
             try:
                 print("[CHATBOT] Trying fallback model llama-3.3-70b-versatile...")
-                answer_text = _call_groq_http(api_key, "llama-3.3-70b-versatile", messages)
+                raw_answer = _call_groq_http(api_key, "llama-3.3-70b-versatile", messages)
+                answer_text = _clean_text(raw_answer)
                 return {"answer": answer_text, "confidence": 1.0}
             except Exception as e2:
                 print(f"[CHATBOT] Fallback model also failed: {e2}")
         raise err
+
 
 
 # -------------------------------------------------------------

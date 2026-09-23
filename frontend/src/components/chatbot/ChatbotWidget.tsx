@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
 import axios from "axios";
@@ -19,37 +19,61 @@ const GREETING: Message = {
   text: "Hi! Ask me anything about Manish's skills, projects, or experience.",
 };
 
-function parseInline(text: string): React.ReactNode {
+function parseInline(text: string): ReactNode {
   if (!text) return null;
-  const parts: React.ReactNode[] = [];
-  const regex = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g;
+  const parts: ReactNode[] = [];
+  // Tokenizer: bold (**...**), inline code (`...`), italic (*...*), underline bold (__...__), link ([text](url))
+  const regex = /(\*\*([^*]+)\*\*|`([^`]+)`|\*([^*]+)\*|__([^_]+)__|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\))/g;
   let lastIndex = 0;
-  let match;
+  let match: RegExpExecArray | null;
 
   while ((match = regex.exec(text)) !== null) {
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
-    const token = match[0];
-    if (token.startsWith("**") && token.endsWith("**")) {
+
+    const full = match[0];
+    const bold1 = match[2];
+    const code = match[3];
+    const italic = match[4];
+    const bold2 = match[5];
+    const linkText = match[6];
+    const linkUrl = match[7];
+
+    if (bold1 || bold2) {
       parts.push(
-        <strong key={match.index} className="font-semibold text-text-primary">
-          {token.slice(2, -2)}
+        <strong key={match.index} className="font-bold text-text-primary">
+          {bold1 || bold2}
         </strong>
       );
-    } else if (token.startsWith("`") && token.endsWith("`")) {
+    } else if (code) {
       parts.push(
         <code key={match.index} className="px-1.5 py-0.5 rounded bg-white/10 text-accent-cyan font-mono text-xs">
-          {token.slice(1, -1)}
+          {code}
         </code>
       );
-    } else if (token.startsWith("*") && token.endsWith("*")) {
+    } else if (italic) {
       parts.push(
         <em key={match.index} className="italic text-text-primary/90">
-          {token.slice(1, -1)}
+          {italic}
         </em>
       );
+    } else if (linkText && linkUrl) {
+      parts.push(
+        <a
+          key={match.index}
+          href={linkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-accent-cyan underline hover:text-accent-cyan/80 transition-colors"
+        >
+          {linkText}
+        </a>
+      );
+    } else {
+      parts.push(full);
     }
+
     lastIndex = regex.lastIndex;
   }
 
@@ -63,16 +87,19 @@ function parseInline(text: string): React.ReactNode {
 function FormattedMessage({ text }: { text: string }) {
   if (!text) return null;
 
-  // Normalize clumsy inline markdown combinations
+  // Pre-normalize text so inline numbered items or dashed items start on new lines
   const normalized = text
     .replace(/\r\n/g, "\n")
     .replace(/---\s*/g, "\n---\n")
     .replace(/###\s*/g, "\n### ")
-    .replace(/([.!?])\s+(\d+\.\s+\*\*)/g, "$1\n$2")
-    .replace(/([.!?])\s+([•\-*]\s+\*\*)/g, "$1\n$2");
+    .replace(/\s+(\*\*\d+\.\s+)/g, "\n\n$1")
+    .replace(/([.!?])\s+(\d+\.\s+)/g, "$1\n\n$2")
+    .replace(/([.!?])\s+-\s+([A-Z])/g, "$1\n- $2")
+    .replace(/\s+-\s+(\*\*[^*]+\*\*)/g, "\n- $1")
+    .replace(/(\*\*(Email|LinkedIn|GitHub|Phone|Contact)\*\*)/gi, "\n$1");
 
   const lines = normalized.split("\n");
-  const elements: React.ReactNode[] = [];
+  const elements: ReactNode[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i];
@@ -101,6 +128,18 @@ function FormattedMessage({ text }: { text: string }) {
         <h3 key={`h3-${i}`} className="font-bold text-accent-cyan text-sm mt-2.5 mb-1">
           {parseInline(line.replace(/^##\s+/, ""))}
         </h3>
+      );
+      continue;
+    }
+
+    // Numbered item with bold, like "**1. Shield For She**"
+    const boldNumMatch = line.match(/^\*\*(\d+\.\s+[^*]+)\*\*(.*)/);
+    if (boldNumMatch) {
+      elements.push(
+        <div key={`bnum-${i}`} className="my-1.5">
+          <span className="font-bold text-accent-cyan">{boldNumMatch[1]}</span>
+          <span className="text-text-secondary">{parseInline(boldNumMatch[2])}</span>
+        </div>
       );
       continue;
     }
@@ -141,6 +180,7 @@ function FormattedMessage({ text }: { text: string }) {
 
   return <div className="space-y-0.5 text-sm">{elements}</div>;
 }
+
 
 
 export default function ChatbotWidget() {
