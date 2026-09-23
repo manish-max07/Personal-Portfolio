@@ -51,3 +51,17 @@ def health_check():
         "engine": "groq-fast-fallback"
     }
 
+@app.get("/debug-groq")
+def debug_groq():
+    import os
+    from app.services.chatbot_service import _call_groq_http
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    if not groq_key:
+        return {"error": "GROQ_API_KEY is not set in environment"}
+    try:
+        ans = _call_groq_http(groq_key, "llama-3.1-8b-instant", [{"role": "user", "content": "say test passed"}])
+        return {"status": "success", "groq_reply": ans}
+    except Exception as e:
+        return {"status": "error", "details": str(e)}
+
+

@@ -1,42 +1,40 @@
 import os
-import numpy as np
 from app.services.knowledge_base import KNOWLEDGE_BASE
 
 # -------------------------------------------------------------
-# Existing Model-based Approach (Preserved for future use/fallback)
+# Existing Model-based Approach (Preserved in comments for future use)
+# To re-enable in the future:
+# 1. Uncomment torch & sentence-transformers in requirements.txt
+# 2. Uncomment the functions below
 # -------------------------------------------------------------
-_model = None
-_kb_embeddings = None
-_kb_answer_map = None
-
-def _load_model():
-    global _model, _kb_embeddings, _kb_answer_map
-    if _model is None:
-        import torch
-        torch.set_grad_enabled(False)
-        torch.set_num_threads(1)
-        
-        from sentence_transformers import SentenceTransformer  # deferred import
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-
-        all_questions = []
-        answer_map = []
-
-        for entry in KNOWLEDGE_BASE:
-            for q in entry["questions"]:
-                all_questions.append(q)
-                answer_map.append(entry["answer"])
-
-        _kb_embeddings = _model.encode(all_questions)
-        _kb_answer_map = answer_map
-
-    return _model, _kb_embeddings, _kb_answer_map
-
-def _cosine_similarity(a, b):
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+# import numpy as np
+# _model = None
+# _kb_embeddings = None
+# _kb_answer_map = None
+#
+# def _load_model():
+#     global _model, _kb_embeddings, _kb_answer_map
+#     if _model is None:
+#         import torch
+#         torch.set_grad_enabled(False)
+#         torch.set_num_threads(1)
+#         from sentence_transformers import SentenceTransformer
+#         _model = SentenceTransformer("all-MiniLM-L6-v2")
+#         all_questions = []
+#         answer_map = []
+#         for entry in KNOWLEDGE_BASE:
+#             for q in entry["questions"]:
+#                 all_questions.append(q)
+#                 answer_map.append(entry["answer"])
+#         _kb_embeddings = _model.encode(all_questions)
+#         _kb_answer_map = answer_map
+#     return _model, _kb_embeddings, _kb_answer_map
+#
+# def _cosine_similarity(a, b):
+#     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 def _get_kb_keyword_answer(user_question: str) -> dict:
-    """Lightweight keyword fallback in case local model runs out of memory on small servers."""
+    """Lightweight zero-memory keyword fallback from knowledge base."""
     q_words = set(user_question.lower().split())
     best_match = None
     max_overlap = 0
@@ -58,34 +56,9 @@ def _get_kb_keyword_answer(user_question: str) -> dict:
     }
 
 def get_answer_from_model(user_question: str) -> dict:
-    """Local model embedding match using sentence-transformers (preserved)."""
-    try:
-        model, kb_embeddings, kb_answer_map = _load_model()
-        user_embedding = model.encode([user_question])[0]
+    """Fallback handler using the knowledge base without blowing Render's memory limit."""
+    return _get_kb_keyword_answer(user_question)
 
-        similarities = [
-            _cosine_similarity(user_embedding, kb_emb)
-            for kb_emb in kb_embeddings
-        ]
-
-        best_idx = int(np.argmax(similarities))
-        best_score = float(similarities[best_idx])
-
-        CONFIDENCE_THRESHOLD = 0.28
-
-        if best_score < CONFIDENCE_THRESHOLD:
-            return {
-                "answer": "I'm not sure about that one — feel free to ask me about Manish's skills, projects, experience, or achievements!",
-                "confidence": best_score
-            }
-
-        return {
-            "answer": kb_answer_map[best_idx],
-            "confidence": best_score
-        }
-    except Exception as e:
-        print(f"[CHATBOT] Local sentence-transformers model failed/OOM ({e}). Using direct knowledge base fallback.")
-        return _get_kb_keyword_answer(user_question)
 
 # -------------------------------------------------------------
 # Groq API Integration (Fast inference via llama-3.1-8b-instant)
