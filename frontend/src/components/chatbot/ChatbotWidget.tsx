@@ -19,6 +19,130 @@ const GREETING: Message = {
   text: "Hi! Ask me anything about Manish's skills, projects, or experience.",
 };
 
+function parseInline(text: string): React.ReactNode {
+  if (!text) return null;
+  const parts: React.ReactNode[] = [];
+  const regex = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    const token = match[0];
+    if (token.startsWith("**") && token.endsWith("**")) {
+      parts.push(
+        <strong key={match.index} className="font-semibold text-text-primary">
+          {token.slice(2, -2)}
+        </strong>
+      );
+    } else if (token.startsWith("`") && token.endsWith("`")) {
+      parts.push(
+        <code key={match.index} className="px-1.5 py-0.5 rounded bg-white/10 text-accent-cyan font-mono text-xs">
+          {token.slice(1, -1)}
+        </code>
+      );
+    } else if (token.startsWith("*") && token.endsWith("*")) {
+      parts.push(
+        <em key={match.index} className="italic text-text-primary/90">
+          {token.slice(1, -1)}
+        </em>
+      );
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
+function FormattedMessage({ text }: { text: string }) {
+  if (!text) return null;
+
+  // Normalize clumsy inline markdown combinations
+  const normalized = text
+    .replace(/\r\n/g, "\n")
+    .replace(/---\s*/g, "\n---\n")
+    .replace(/###\s*/g, "\n### ")
+    .replace(/([.!?])\s+(\d+\.\s+\*\*)/g, "$1\n$2")
+    .replace(/([.!?])\s+([•\-*]\s+\*\*)/g, "$1\n$2");
+
+  const lines = normalized.split("\n");
+  const elements: React.ReactNode[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const line = rawLine.trim();
+
+    if (!line) {
+      elements.push(<div key={`sp-${i}`} className="h-1.5" />);
+      continue;
+    }
+
+    if (/^[-*_]{3,}$/.test(line)) {
+      elements.push(<hr key={`hr-${i}`} className="my-2 border-white/10" />);
+      continue;
+    }
+
+    if (line.startsWith("### ")) {
+      elements.push(
+        <h4 key={`h4-${i}`} className="font-semibold text-accent-cyan text-sm mt-2 mb-1">
+          {parseInline(line.replace(/^###\s+/, ""))}
+        </h4>
+      );
+      continue;
+    }
+    if (line.startsWith("## ")) {
+      elements.push(
+        <h3 key={`h3-${i}`} className="font-bold text-accent-cyan text-sm mt-2.5 mb-1">
+          {parseInline(line.replace(/^##\s+/, ""))}
+        </h3>
+      );
+      continue;
+    }
+
+    // Bullet points (- or * or •)
+    if (/^[-*•]\s+/.test(line)) {
+      const bulletContent = line.replace(/^[-*•]\s+/, "");
+      elements.push(
+        <div key={`bl-${i}`} className="flex items-start gap-2 my-1 pl-0.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan mt-1.5 flex-shrink-0" />
+          <span className="flex-1 leading-relaxed text-text-secondary">{parseInline(bulletContent)}</span>
+        </div>
+      );
+      continue;
+    }
+
+    // Numbered items (1. item)
+    const numMatch = line.match(/^(\d+)\.\s+(.*)/);
+    if (numMatch) {
+      elements.push(
+        <div key={`num-${i}`} className="flex items-start gap-2 my-1 pl-0.5">
+          <span className="font-semibold text-accent-cyan text-xs mt-0.5 flex-shrink-0">
+            {numMatch[1]}.
+          </span>
+          <span className="flex-1 leading-relaxed text-text-secondary">{parseInline(numMatch[2])}</span>
+        </div>
+      );
+      continue;
+    }
+
+    // Normal paragraph
+    elements.push(
+      <p key={`p-${i}`} className="my-0.5 leading-relaxed text-text-secondary">
+        {parseInline(rawLine)}
+      </p>
+    );
+  }
+
+  return <div className="space-y-0.5 text-sm">{elements}</div>;
+}
+
+
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([GREETING]);
@@ -213,7 +337,8 @@ export default function ChatbotWidget() {
                           className="w-1.5 h-1.5 rounded-full bg-accent-cyan/60 animate-bounce"
                           style={{ animationDelay: "300ms" }}
                         />
-                      </div>
+                    ) : msg.role === "bot" ? (
+                      <FormattedMessage text={msg.text} />
                     ) : (
                       msg.text
                     )}

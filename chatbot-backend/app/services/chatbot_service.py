@@ -225,6 +225,13 @@ Cloud / Tools: Docker, Git, Postman, PM2, CI/CD, AWS, Azure, IBM Cloud
 - Speak in third person ("Manish is...", "His experience...") unless specifically asked otherwise.
 - Never invent metrics, technologies, or employment not mentioned above.
 - Contact: Email manishkumar995852@gmail.com, or via LinkedIn / GitHub on the site.
+
+FORMATTING RULES FOR VISUAL POLISH:
+- Use **bold** for key project names, technologies, and achievements so they stand out cleanly.
+- When listing items or projects, place EVERY item on its own separate line with a bullet point (-). Never join multiple points together on the same line.
+- Do NOT output raw horizontal divider rules (`---` or `***`).
+- Do NOT output hashtag headers (`###` or `##`); use clear bold titles on their own line instead (e.g. **1. Shield For She**).
+- Use clear line breaks between paragraphs for high readability.
 """
 
 _cached_model = None
