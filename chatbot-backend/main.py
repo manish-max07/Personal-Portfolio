@@ -39,3 +39,15 @@ def ask_chatbot(request: Request, body: ChatRequest):
 @app.get("/")
 def read_root():
     return {"message": "Chatbot Microservice is running"}
+
+@app.get("/health")
+def health_check():
+    import os
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    return {
+        "status": "online",
+        "has_groq_key": bool(groq_key),
+        "groq_key_prefix": groq_key[:6] + "..." if groq_key else None,
+        "engine": "groq-fast-fallback"
+    }
+

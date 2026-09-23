@@ -35,34 +35,60 @@ def _load_model():
 def _cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-def get_answer_from_model(user_question: str) -> dict:
-    """Local model embedding match using sentence-transformers (preserved)."""
-    model, kb_embeddings, kb_answer_map = _load_model()
-    user_embedding = model.encode([user_question])[0]
+def _get_kb_keyword_answer(user_question: str) -> dict:
+    """Lightweight keyword fallback in case local model runs out of memory on small servers."""
+    q_words = set(user_question.lower().split())
+    best_match = None
+    max_overlap = 0
 
-    similarities = [
-        _cosine_similarity(user_embedding, kb_emb)
-        for kb_emb in kb_embeddings
-    ]
+    for entry in KNOWLEDGE_BASE:
+        for q in entry["questions"]:
+            entry_words = set(q.lower().split())
+            overlap = len(q_words.intersection(entry_words))
+            if overlap > max_overlap:
+                max_overlap = overlap
+                best_match = entry["answer"]
 
-    best_idx = int(np.argmax(similarities))
-    best_score = float(similarities[best_idx])
-
-    CONFIDENCE_THRESHOLD = 0.28
-
-    if best_score < CONFIDENCE_THRESHOLD:
-        return {
-            "answer": "I'm not sure about that one — feel free to ask me about Manish's skills, projects, experience, or achievements!",
-            "confidence": best_score
-        }
+    if best_match and max_overlap > 0:
+        return {"answer": best_match, "confidence": 0.8}
 
     return {
-        "answer": kb_answer_map[best_idx],
-        "confidence": best_score
+        "answer": "I'm not sure about that one — feel free to ask me about Manish's skills, projects, experience, or achievements!",
+        "confidence": 0.0
     }
 
+def get_answer_from_model(user_question: str) -> dict:
+    """Local model embedding match using sentence-transformers (preserved)."""
+    try:
+        model, kb_embeddings, kb_answer_map = _load_model()
+        user_embedding = model.encode([user_question])[0]
+
+        similarities = [
+            _cosine_similarity(user_embedding, kb_emb)
+            for kb_emb in kb_embeddings
+        ]
+
+        best_idx = int(np.argmax(similarities))
+        best_score = float(similarities[best_idx])
+
+        CONFIDENCE_THRESHOLD = 0.28
+
+        if best_score < CONFIDENCE_THRESHOLD:
+            return {
+                "answer": "I'm not sure about that one — feel free to ask me about Manish's skills, projects, experience, or achievements!",
+                "confidence": best_score
+            }
+
+        return {
+            "answer": kb_answer_map[best_idx],
+            "confidence": best_score
+        }
+    except Exception as e:
+        print(f"[CHATBOT] Local sentence-transformers model failed/OOM ({e}). Using direct knowledge base fallback.")
+        return _get_kb_keyword_answer(user_question)
+
 # -------------------------------------------------------------
-# Groq API Integration (Fast inference via llama-3.3-70b-versatile)
+# Groq API Integration (Fast inference via llama-3.1-8b-instant)
 # -------------------------------------------------------------
 _system_prompt = None
 
@@ -92,34 +118,68 @@ Your role is to answer visitors' questions accurately, concisely, and warmly bas
 """
     return _system_prompt
 
+def _call_groq_http(api_key: str, model_name: str, messages: list) -> str:
+    """Direct HTTP call to Groq API using Python standard library (no pip dependencies required)."""
+    import json
+    import urllib.request
+    import urllib.error
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "User-Agent": "Portfolio-Chatbot/1.0"
+    }
+    payload = json.dumps({
+        "model": model_name,
+        "messages": messages,
+        "temperature": 0.3,
+        "max_tokens": 350
+    }).encode("utf-8")
+
+    req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=15) as response:
+            res_data = json.loads(response.read().decode("utf-8"))
+            return res_data["choices"][0]["message"]["content"]
+    except urllib.error.HTTPError as err:
+        err_body = err.read().decode("utf-8", errors="ignore")
+        print(f"[CHATBOT] Groq HTTP {err.code} error: {err_body}")
+        raise RuntimeError(f"Groq API HTTP {err.code}: {err_body}") from err
+
 def _get_groq_answer(user_question: str, api_key: str) -> dict:
     import time
-    from groq import Groq
 
     start_time = time.time()
-    client = Groq(api_key=api_key)
-
-    # Preferred fastest free models on Groq:
     configured_model = os.environ.get("GROQ_MODEL", "").strip()
     candidate_models = (
         [configured_model] if configured_model else ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"]
     )
 
+    messages = [
+        {"role": "system", "content": _get_system_prompt()},
+        {"role": "user", "content": user_question.strip()},
+    ]
+
     last_error = None
     for model_name in candidate_models:
         try:
             print(f"[CHATBOT] Querying Groq with model: {model_name}...")
-            chat_completion = client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": _get_system_prompt()},
-                    {"role": "user", "content": user_question.strip()},
-                ],
-                model=model_name,
-                temperature=0.3,
-                max_tokens=350,
-            )
+            # Attempt via Groq SDK first if available, else direct HTTP
+            try:
+                from groq import Groq
+                client = Groq(api_key=api_key)
+                chat_completion = client.chat.completions.create(
+                    messages=messages,
+                    model=model_name,
+                    temperature=0.3,
+                    max_tokens=350,
+                )
+                answer_text = chat_completion.choices[0].message.content
+            except ImportError:
+                # Zero-dependency HTTP fallback
+                answer_text = _call_groq_http(api_key, model_name, messages)
 
-            answer_text = chat_completion.choices[0].message.content
             elapsed = time.time() - start_time
             print(f"[CHATBOT] Groq responded successfully via {model_name} in {elapsed:.2f}s")
             return {
@@ -153,4 +213,5 @@ def get_answer(user_question: str) -> dict:
 
     print("[CHATBOT] No GROQ_API_KEY detected. Using local sentence-transformers model.")
     return get_answer_from_model(user_question)
+
 
