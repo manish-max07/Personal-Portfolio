@@ -5,6 +5,12 @@ backend/**/__pycache__/
 backend/.env
 backend/*.db
 
+# Chatbot Backend
+chatbot-backend/venv/
+chatbot-backend/__pycache__/
+chatbot-backend/**/__pycache__/
+chatbot-backend/.env
+
 # Frontend
 frontend/node_modules/
 frontend/.next/
