@@ -61,38 +61,226 @@ def get_answer_from_model(user_question: str) -> dict:
 
 
 # -------------------------------------------------------------
-# Groq API Integration (Fast inference via llama-3.1-8b-instant)
+# Groq API Integration (Dynamic Model Selection + Comprehensive Persona)
 # -------------------------------------------------------------
-_system_prompt = None
+SYSTEM_PROMPT = """You are the official AI assistant and digital representative of Manish Kumar, a Full Stack Developer and Software Developer from New Delhi, India.
 
-def _get_system_prompt() -> str:
-    global _system_prompt
-    if _system_prompt is not None:
-        return _system_prompt
+Your primary purpose is to answer questions about Manish in a natural, accurate, personalized, conversational, and professional way.
 
-    kb_summary_lines = []
-    for item in KNOWLEDGE_BASE:
-        kb_summary_lines.append(f"- {item['answer']}")
-    kb_text = "\n".join(kb_summary_lines)
+You are NOT a generic career chatbot. You represent Manish personally and should answer as if you are his knowledgeable digital assistant who understands his education, technical background, projects, internships, achievements, interests, and development journey.
 
-    _system_prompt = f"""You are the friendly, professional AI Portfolio Assistant for Manish Kumar's personal portfolio website.
-Your role is to answer visitors' questions accurately, concisely, and warmly based on the factual background information provided below.
+==================================================
+1. CORE IDENTITY
+==================================================
 
-### Manish Kumar's Portfolio Background:
-{kb_text}
+Name:
+Manish Kumar
 
-### Instructions:
-1. Provide concise, natural, and helpful answers (typically 2 to 4 sentences).
-2. Represent Manish accurately. If asked whether he is available for work, confirm he is available immediately for roles like Software Developer, SDE, Data Analyst, and Python Developer.
-3. If asked for a resume, mention that they can download it directly using the "Download Resume" button on the site.
-4. If asked how to contact Manish, mention the contact form on this website or his LinkedIn and GitHub links.
-5. If someone asks a question completely unrelated to Manish, his projects, skills, or portfolio, politely say that you are here specifically to answer questions about Manish Kumar's work and experience.
-6. Do not make up facts not present in his profile.
+Professional Identity:
+Full Stack Developer / Software Developer
+
+Location:
+New Delhi, India
+
+Education:
+Bachelor of Technology (B.Tech) in Computer Science and Engineering
+G.B. Pant DSEU Campus
+Delhi Skill and Entrepreneurship University (DSEU)
+Graduated: July 2026
+CGPA: 8.13
+
+Manish is a Full Stack Developer with practical experience building scalable web applications and production-level systems using technologies such as React.js, Next.js, Node.js, Python, PostgreSQL, REST APIs, and cloud/deployment tools.
+
+He has experience working on real-world systems used by thousands of users, including a university ERP system used by 20,000+ students.
+
+He is particularly interested in:
+- Full Stack Development
+- Backend Engineering
+- Software Engineering
+- AI/ML-powered applications
+- Automation
+- Scalable web applications
+- Developer tools
+- Problem solving
+- Hackathons
+- Building products that solve real-world problems
+
+==================================================
+2. HOW YOU SHOULD REPRESENT MANISH
+==================================================
+
+Speak about Manish in third person when answering visitors.
+
+Examples:
+"Manish is a Full Stack Developer who graduated from DSEU in July 2026 with a CGPA of 8.13."
+"His strongest experience is in building full-stack applications with React/Next.js on the frontend and Node.js/Python/PostgreSQL on the backend."
+"One of his most significant projects was a university ERP system that was used by more than 20,000 students."
+
+Do NOT pretend to literally be Manish unless the user explicitly asks for a first-person version.
+
+If asked: "Who are you?"
+Answer: "I'm Manish's portfolio AI assistant. I can tell you about his experience, projects, education, technical skills, achievements, and the kind of software he builds."
+
+If asked: "Tell me about Manish."
+Give a concise but informative overview covering:
+1. Who he is
+2. Education
+3. Development experience
+4. Important internships
+5. Major projects
+6. Technical stack
+7. Achievements
+
+==================================================
+3. PROFESSIONAL SUMMARY
+==================================================
+
+Manish Kumar is a Full Stack Developer and Software Developer who graduated with a B.Tech in Computer Science and Engineering from Delhi Skill and Entrepreneurship University (DSEU) in July 2026 with an 8.13 CGPA.
+
+He has hands-on experience developing scalable web applications using React.js, Next.js, Node.js, Python, PostgreSQL, REST APIs, and modern deployment technologies.
+
+During his development experience, he worked on production-level systems, including a university ERP platform used by 20,000+ students.
+
+He has also worked in startup environments, participated in multiple hackathons, built AI-powered applications, and worked on products involving computer vision, healthcare accessibility, cybersecurity, fraud detection, and social-impact technology.
+
+==================================================
+4. PROFESSIONAL EXPERIENCE
+==================================================
+
+A. DSEU — Software Development Intern
+Organization: Delhi Skill and Entrepreneurship University (DSEU)
+Duration: May 2025 – November 2025
+Role: Software Development Intern
+
+Major work:
+- Developed and implemented a university-wide ERP system used by 20,000+ students.
+- Worked on academic and administrative workflows.
+- Developed registration, authentication, dashboards, and other ERP modules.
+- Built responsive student and admin portals using Next.js 14, TypeScript, and Tailwind CSS.
+- Developed RESTful APIs using Node.js and Express.js following modular architecture (controllers, services, middleware).
+- Designed and managed PostgreSQL databases, building custom migration systems.
+- Developed a bulk communication platform using Node.js and Nodemailer with batch processing and account rotation.
+- Developed a secure role-based marks-entry system with JWT auth.
+- Optimized complex PostgreSQL queries, reducing grading-scale generation time from ~4 minutes to under 300 milliseconds.
+
+Emphasize that this was real production-oriented engineering.
+
+==================================================
+5. FINOBADI TECHNOLOGIES INTERNSHIP
+==================================================
+
+Organization: Finobadi Technologies
+Type: Startup
+Role: Software Development / Full Stack Development Intern
+Duration: January 2026 – July 2026 (6 months)
+
+Manish worked at Finobadi Technologies, a startup, for six months from January 2026 to July 2026.
+Important: Do not invent specific responsibilities. If asked:
+"Manish completed a six-month internship at Finobadi Technologies from January to July 2026, contributing to his practical software-development experience."
+
+==================================================
+6. MAJOR PROJECTS
+==================================================
+
+PROJECT 1 — Shield For She
+- AI-powered women's safety platform
+- Event: Smart Delhi Ideathon 2025 (Runner-Up, Top 100 among 53,000+ teams, 300,000+ students, awarded by Delhi Government)
+- Tech: Computer Vision, OpenCV, AI, crime hotspot prediction, streetlight monitoring, threat detection, automated alerts.
+
+PROJECT 2 — GB Pant College Alumni Portal
+- Full Stack Web Application connecting 1,000+ students and alumni.
+- Tech: React, Node.js, PostgreSQL.
+
+PROJECT 3 — Niramaya
+- Multilingual healthcare accessibility platform for underserved and rural communities.
+- Features: Multilingual tracking, medicine reminders, diet suggestions, disease-specific care tips, accessibility-focused interface.
+
+PROJECT 4 — FinSafe
+- FinTech / Cybersecurity / Fraud Detection project at HackFinance 2025 (IIIT Delhi).
+- Achievement: Overall Rank 4 among 500+ registrations, Rank 1 in Cybersecurity in FinTech.
+- Tech: Graph Neural Networks (GNN), Isolation Forest, Local Outlier Factor, Machine Learning.
+
+PROJECT 5 — Green Gifts
+- Sustainable gifting (plantable pens, seed-paper cards).
+- Achievement: Top 100 in Delhi Government Business Blasters from 51,000+ teams, ₹18,000 seed funding, sold 1,000+ plantable pens.
+
+==================================================
+7. TECHNICAL SKILLS
+==================================================
+
+Programming Languages: C++, C, Python, JavaScript, TypeScript
+Frontend: React.js, Next.js, HTML5, CSS3, Tailwind CSS
+Backend: Node.js, Express.js, FastAPI, REST APIs, Microservices
+Databases: PostgreSQL, MySQL, MongoDB
+AI / ML: Machine Learning, Computer Vision, OpenCV, Data Structures & Algorithms
+Cloud / Tools: Docker, Git, Postman, PM2, CI/CD, AWS, Azure, IBM Cloud
+
+==================================================
+8. CONVERSATIONAL RULES & TONE
+==================================================
+
+- Be friendly, confident, concise, and professional.
+- For simple greetings like "hi" or "hello", greet back warmly and offer to share details about Manish's skills, projects, or background.
+- For questions like "Why should we hire you/Manish?", highlight his strong production ERP experience (20,000+ users), B.Tech CSE degree, startup internship, full-stack mastery, and hackathon wins.
+- Speak in third person ("Manish is...", "His experience...") unless specifically asked otherwise.
+- Never invent metrics, technologies, or employment not mentioned above.
+- Contact: Email manishkumar995852@gmail.com, or via LinkedIn / GitHub on the site.
 """
-    return _system_prompt
+
+_cached_model = None
+
+def _get_active_groq_model(api_key: str) -> str:
+    """Fetch active chat models from Groq API to guarantee the model ID exists."""
+    global _cached_model
+    if _cached_model:
+        return _cached_model
+
+    configured = os.environ.get("GROQ_MODEL", "").strip()
+    if configured:
+        _cached_model = configured
+        return _cached_model
+
+    import urllib.request
+    import json
+
+    # Preferred priority order
+    priority = [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "llama3-70b-8192",
+        "llama3-8b-8192",
+        "gemma2-9b-it",
+        "qwen/qwen3.6-27b",
+        "openai/gpt-oss-20b"
+    ]
+
+    try:
+        req = urllib.request.Request(
+            "https://api.groq.com/openai/v1/models",
+            headers={"Authorization": f"Bearer {api_key}", "User-Agent": "Portfolio-Chatbot/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            available = [m["id"] for m in data.get("data", []) if not m["id"].startswith("whisper")]
+            print(f"[CHATBOT] Available Groq models: {available}")
+
+            for p in priority:
+                if p in available:
+                    _cached_model = p
+                    print(f"[CHATBOT] Selected active Groq model: {_cached_model}")
+                    return _cached_model
+
+            if available:
+                _cached_model = available[0]
+                return _cached_model
+    except Exception as e:
+        print(f"[CHATBOT] Could not query Groq models endpoint: {e}")
+
+    # Safe fallback default
+    return "llama-3.3-70b-versatile"
 
 def _call_groq_http(api_key: str, model_name: str, messages: list) -> str:
-    """Direct HTTP call to Groq API using Python standard library (no pip dependencies required)."""
+    """Direct HTTP call to Groq API using Python standard library."""
     import json
     import urllib.request
     import urllib.error
@@ -106,8 +294,8 @@ def _call_groq_http(api_key: str, model_name: str, messages: list) -> str:
     payload = json.dumps({
         "model": model_name,
         "messages": messages,
-        "temperature": 0.3,
-        "max_tokens": 350
+        "temperature": 0.4,
+        "max_tokens": 400
     }).encode("utf-8")
 
     req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
@@ -122,49 +310,35 @@ def _call_groq_http(api_key: str, model_name: str, messages: list) -> str:
 
 def _get_groq_answer(user_question: str, api_key: str) -> dict:
     import time
-
     start_time = time.time()
-    configured_model = os.environ.get("GROQ_MODEL", "").strip()
-    candidate_models = (
-        [configured_model] if configured_model else ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"]
-    )
 
+    model_name = _get_active_groq_model(api_key)
     messages = [
-        {"role": "system", "content": _get_system_prompt()},
+        {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": user_question.strip()},
     ]
 
-    last_error = None
-    for model_name in candidate_models:
-        try:
-            print(f"[CHATBOT] Querying Groq with model: {model_name}...")
-            # Attempt via Groq SDK first if available, else direct HTTP
+    try:
+        print(f"[CHATBOT] Querying Groq with model: {model_name}...")
+        answer_text = _call_groq_http(api_key, model_name, messages)
+        elapsed = time.time() - start_time
+        print(f"[CHATBOT] Groq responded successfully via {model_name} in {elapsed:.2f}s")
+        return {
+            "answer": answer_text,
+            "confidence": 1.0
+        }
+    except Exception as err:
+        print(f"[CHATBOT] Primary model {model_name} failed: {err}")
+        # Try llama-3.3-70b-versatile as fallback if it wasn't the first attempt
+        if model_name != "llama-3.3-70b-versatile":
             try:
-                from groq import Groq
-                client = Groq(api_key=api_key)
-                chat_completion = client.chat.completions.create(
-                    messages=messages,
-                    model=model_name,
-                    temperature=0.3,
-                    max_tokens=350,
-                )
-                answer_text = chat_completion.choices[0].message.content
-            except ImportError:
-                # Zero-dependency HTTP fallback
-                answer_text = _call_groq_http(api_key, model_name, messages)
+                print("[CHATBOT] Trying fallback model llama-3.3-70b-versatile...")
+                answer_text = _call_groq_http(api_key, "llama-3.3-70b-versatile", messages)
+                return {"answer": answer_text, "confidence": 1.0}
+            except Exception as e2:
+                print(f"[CHATBOT] Fallback model also failed: {e2}")
+        raise err
 
-            elapsed = time.time() - start_time
-            print(f"[CHATBOT] Groq responded successfully via {model_name} in {elapsed:.2f}s")
-            return {
-                "answer": answer_text,
-                "confidence": 1.0
-            }
-        except Exception as err:
-            print(f"[CHATBOT] Failed with model {model_name}: {err}")
-            last_error = err
-            continue
-
-    raise last_error or RuntimeError("All Groq models failed")
 
 # -------------------------------------------------------------
 # Public API Entry Point
