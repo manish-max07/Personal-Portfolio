@@ -377,6 +377,7 @@ export default function ChatbotWidget() {
                           className="w-1.5 h-1.5 rounded-full bg-accent-cyan/60 animate-bounce"
                           style={{ animationDelay: "300ms" }}
                         />
+                      </div>
                     ) : msg.role === "bot" ? (
                       <FormattedMessage text={msg.text} />
                     ) : (
